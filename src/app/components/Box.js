@@ -1,7 +1,8 @@
 "use client";
+import './Box.css'
 
 function Box({value, handleClick}){
-    return <button value={value} onClick={handleClick}></button>
+    return <button className="box" onClick={handleClick}>{value}</button>
 }
 
 export default Box;
