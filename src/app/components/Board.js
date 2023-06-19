@@ -1,6 +1,4 @@
 "use client";
-import '../styles.css'
-import { useState } from "react";
 import Box from './Box';
 import './Board.css'
 
