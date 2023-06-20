@@ -4,7 +4,7 @@ import './Board.css'
 
 function Board({handleBoxClick, board}) {
 
-    // const renderedCol
+
 
     return (
     <div>
