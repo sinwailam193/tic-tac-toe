@@ -78,13 +78,13 @@ const TicTacToe = () => {
   }
 
   return (
+  <div>
     <div className='all'>
-      <h3 className='title'>Tic-Tac-Toe</h3>
       <h5 className='status'>Status: {status}</h5>
       <Board handleBoxClick={handleBoxClick} board={board} />
       {showModal && (
         <div className="modal">
-          <div className="modal-content">
+           <div className={`modal-content ${showModal ? 'show' : ''}`}>
             <h2>{winner ? `Winner: ${winner}` : "Draw"}</h2>
             <button className="replay-button" onClick={resetGame}>
               Play Again
@@ -93,6 +93,10 @@ const TicTacToe = () => {
         </div>
       )}
     </div>
+    <div>
+      <button className='reset-button' onClick={resetGame}>Reset</button>
+    </div>
+  </div>
   );
 };
 
