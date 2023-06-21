@@ -2,7 +2,8 @@
 import './Box.css'
 
 function Box({value, handleClick}){
-    return <button className="box" onClick={handleClick} value={value} >{value}</button>
+    const style = value === 'X' ? "box x" : "box o"
+    return <button className={style} onClick={handleClick} value={value} >{value}</button>
 }
 
 export default Box;

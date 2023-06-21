@@ -3,12 +3,14 @@
 import './styles.css'
 import React, { useState, useEffect } from 'react';
 import Board from './components/Board';
+import ScoreBoard from './components/scoroboard';
 
 const TicTacToe = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [xTurn, setXTurn] = useState(true);
   const [status, setStatus] = useState("Next player: " + (xTurn ? "X" : "O"));
   const [showModal, setShowModal ] = useState(false);
+  const [scores, setScores] = useState({xScore:0,oScore:0});
 
   useEffect(() => {
     checkWinner();
@@ -21,23 +23,6 @@ const TicTacToe = () => {
     setShowModal(false);
   }
 
-  const handleBoxClick = (index) => {
-    if (board[index] || calculateWinner()) {
-      return;
-    }
-
-    const newBoard = board.map((value, currentIndex) => {
-      if (index === currentIndex) {
-        return xTurn ? 'X' : 'O';
-      } else {
-        return value;
-      }
-    });
-
-    setBoard(newBoard);
-    setXTurn(!xTurn);
-  };
-
   let winner = calculateWinner();
 
   const checkWinner = () => {
@@ -46,8 +31,16 @@ const TicTacToe = () => {
     });
 
     if (winner) {
-      setStatus("Winner: " + winner);
       setShowModal(true);
+      if (winner === 'X') {
+        let {xScore} = scores
+        xScore += 1;
+        setScores({...scores,xScore})
+      }else{
+        let {oScore} = scores
+        oScore += 1;
+        setScores({...scores,oScore})
+      }
     } else if (isFilled && winner === null) {
       setStatus('Draw');
       setShowModal(true);
@@ -77,10 +70,30 @@ const TicTacToe = () => {
     return null;
   }
 
+
+
+  const handleBoxClick = (index) => {
+    if (board[index] || calculateWinner()) {
+      return;
+    }
+
+    const newBoard = board.map((value, currentIndex) => {
+      if (index === currentIndex) {
+        return xTurn ? 'X' : 'O';
+      } else {
+        return value;
+      }
+    });
+
+    setBoard(newBoard);
+    setXTurn(!xTurn);
+  };
+
   return (
   <div>
     <div className='all'>
-      <h5 className='status'>Status: {status}</h5>
+      <ScoreBoard scores={scores} xTurn={xTurn}/>
+      <h5 className='status'>{status}</h5>
       <Board handleBoxClick={handleBoxClick} board={board} />
       {showModal && (
         <div className="modal">
