@@ -1,93 +1,71 @@
-"use client";
+'use client'
 
 import './styles.css'
-import React, { useState, useEffect } from 'react';
-import Board from './components/Board';
-import ScoreBoard from './components/scoroboard';
+import React, { useState, useEffect } from 'react'
+import Board from './components/Board'
+import ScoreBoard from './components/scoroboard'
+import calculateWinner from './util'
 
 const TicTacToe = () => {
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [xTurn, setXTurn] = useState(true);
-  const [status, setStatus] = useState("Next player: " + (xTurn ? "X" : "O"));
-  const [showModal, setShowModal ] = useState(false);
-  const [scores, setScores] = useState({xScore:0,oScore:0});
+  const [board, setBoard] = useState(Array(9).fill(null))
+  const [xTurn, setXTurn] = useState(true)
+  const [status, setStatus] = useState('Next player: X')
+  const [showModal, setShowModal] = useState(false)
+  const [scores, setScores] = useState({ xScore: 0, oScore: 0 })
 
   useEffect(() => {
-    checkWinner();
-  }, [board, xTurn]);
+    checkWinner()
+  }, [board, xTurn])
 
   const resetGame = () => {
-    setBoard(Array(9).fill(null));
-    setXTurn(true);
-    setStatus("Next player: X");
-    setShowModal(false);
+    setBoard(Array(9).fill(null))
+    setXTurn(true)
+    setStatus('Next player: X')
+    setShowModal(false)
   }
 
-  let winner = calculateWinner();
+  const winner = calculateWinner(board)
 
   const checkWinner = () => {
     const isFilled = board.every((value) => {
-      return value !== undefined && value !== null;
-    });
+      return value !== undefined && value !== null
+    })
 
     if (winner) {
-      setShowModal(true);
+      setShowModal(true)
       if (winner === 'X') {
-        let {xScore} = scores
-        xScore += 1;
-        setScores({...scores,xScore})
-      }else{
-        let {oScore} = scores
-        oScore += 1;
-        setScores({...scores,oScore})
+        let { xScore } = scores
+        xScore += 1
+        setScores({ ...scores, xScore })
+      } else {
+        let { oScore } = scores
+        oScore += 1
+        setScores({ ...scores, oScore })
       }
     } else if (isFilled && winner === null) {
-      setStatus('Draw');
-      setShowModal(true);
+      setStatus('Draw')
+      setShowModal(true)
     } else {
-      setStatus("Next player: " + (xTurn ? "X" : "O"));
+      setStatus('Next player: ' + (xTurn ? 'X' : 'O'))
     }
-  };
-
-  function calculateWinner() {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
-    ];
-
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        return board[a];
-      }
-    }
-    return null;
   }
 
-
-
   const handleBoxClick = (index) => {
-    if (board[index] || calculateWinner()) {
-      return;
+    if (board[index] || calculateWinner(board)) {
+      return
     }
 
     const newBoard = board.map((value, currentIndex) => {
       if (index === currentIndex) {
-        return xTurn ? 'X' : 'O';
+        return xTurn ? 'X' : 'O'
       } else {
-        return value;
+        return value
       }
-    });
+    })
 
-    setBoard(newBoard);
-    setXTurn(!xTurn);
-  };
+    setBoard(newBoard)
+    setXTurn(!xTurn)
+  }
 
   return (
   <div>
@@ -98,7 +76,7 @@ const TicTacToe = () => {
       {showModal && (
         <div className="modal">
            <div className={`modal-content ${showModal ? 'show' : ''}`}>
-            <h2>{winner ? `Winner: ${winner}` : "Draw"}</h2>
+            <h2>{winner ? `Winner: ${winner}` : 'Draw'}</h2>
             <button className="replay-button" onClick={resetGame}>
               Play Again
             </button>
@@ -107,10 +85,10 @@ const TicTacToe = () => {
       )}
     </div>
     <div>
-      <button className='reset-button' onClick={resetGame}>Reset</button>
+      <button className='reset-button' onClick={resetGame}>Reset Board</button>
     </div>
   </div>
-  );
-};
+  )
+}
 
-export default TicTacToe;
+export default TicTacToe

@@ -1,12 +1,10 @@
-"use client";
-import Box from './Box';
+'use client'
+import Box from './Box'
 import './Board.css'
+import React from 'react'
 
-function Board({handleBoxClick, board}) {
-
-    
-
-    return (
+function Board ({ handleBoxClick, board }) {
+  return (
     <div>
         <div className='row'>
             <Box value={board[0]} handleClick={() => handleBoxClick(0)}/>
@@ -24,7 +22,7 @@ function Board({handleBoxClick, board}) {
             <Box value={board[8]} handleClick={() => handleBoxClick(8)}/>
         </div>
     </div>
-    );  
+  )
 }
 
-export default Board;
+export default Board
