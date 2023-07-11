@@ -1,95 +1,94 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
 
-export default function Home() {
+import './styles.css'
+import React, { useState, useEffect } from 'react'
+import Board from './components/Board'
+import ScoreBoard from './components/scoroboard'
+import calculateWinner from './util'
+
+const TicTacToe = () => {
+  const [board, setBoard] = useState(Array(9).fill(null))
+  const [xTurn, setXTurn] = useState(true)
+  const [status, setStatus] = useState('Next player: X')
+  const [showModal, setShowModal] = useState(false)
+  const [scores, setScores] = useState({ xScore: 0, oScore: 0 })
+
+  useEffect(() => {
+    checkWinner()
+  }, [board, xTurn])
+
+  const resetGame = () => {
+    setBoard(Array(9).fill(null))
+    setXTurn(true)
+    setStatus('Next player: X')
+    setShowModal(false)
+  }
+
+  const winner = calculateWinner(board)
+
+  const checkWinner = () => {
+    const isFilled = board.every((value) => {
+      return value !== undefined && value !== null
+    })
+
+    if (winner) {
+      setShowModal(true)
+      if (winner === 'X') {
+        let { xScore } = scores
+        xScore += 1
+        setScores({ ...scores, xScore })
+      } else {
+        let { oScore } = scores
+        oScore += 1
+        setScores({ ...scores, oScore })
+      }
+    } else if (isFilled && winner === null) {
+      setStatus('Draw')
+      setShowModal(true)
+    } else {
+      setStatus('Next player: ' + (xTurn ? 'X' : 'O'))
+    }
+  }
+
+  const handleBoxClick = (index) => {
+    if (board[index] || calculateWinner(board)) {
+      return
+    }
+
+    const newBoard = board.map((value, currentIndex) => {
+      if (index === currentIndex) {
+        return xTurn ? 'X' : 'O'
+      } else {
+        return value
+      }
+    })
+
+    setBoard(newBoard)
+    setXTurn(!xTurn)
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+  <div>
+    <div className='all'>
+      <ScoreBoard scores={scores} xTurn={xTurn}/>
+      <h5 className='status'>{status}</h5>
+      <Board handleBoxClick={handleBoxClick} board={board} />
+      {showModal && (
+        <div className="modal">
+           <div className={`modal-content ${showModal ? 'show' : ''}`}>
+            <h2>{winner ? `Winner: ${winner}` : 'Draw'}</h2>
+            <button className="replay-button" onClick={resetGame}>
+              Play Again
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      )}
+    </div>
+    <div>
+      <button className='reset-button' onClick={resetGame}>Reset Board</button>
+    </div>
+  </div>
   )
 }
+
+export default TicTacToe
